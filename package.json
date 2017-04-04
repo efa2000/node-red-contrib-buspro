@@ -16,10 +16,18 @@
     "buspro",
     "smart-bus"
   ],
+  "node-red": {
+    "nodes": {
+      "buspro": "buspro/buspro.js"
+    }
+  },
   "author": "efa2000",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/efa2000/node-red-contrib-buspro/issues"
   },
-  "homepage": "https://github.com/efa2000/node-red-contrib-buspro#readme"
+  "homepage": "https://github.com/efa2000/node-red-contrib-buspro#readme",
+  "dependencies": {
+    "smart-bus": "^0.3.0"
+  }
 }
