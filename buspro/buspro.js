@@ -23,10 +23,18 @@ module.exports = function(RED) {
 
     function BusproIn(config) {
         RED.nodes.createNode(this,config);
-        this.bus = RED.nodes.getNode(config.controller);
+        var controller = RED.nodes.getNode(config.controller);
+        this.bus = controller.bus;
         var node = this;
-		this.bus.on('command', function(command) {
-		  // Integer with command operation code
+        this.transmit = function(command){
+        	var msg = {};
+		  	msg.sender = command.sender.subnet + "." + command.sender.id;
+		  	msg.target = command.target.subnet + "." + command.target.id;
+		  	msg.code = command.code;
+		  	msg.payload = command.data;
+		  	node.send(msg);
+		};
+        // Integer with command operation code
 		  //command.code;
 		  // Device objects
 		  //command.sender;
@@ -34,7 +42,11 @@ module.exports = function(RED) {
 		  // Object with decoded data or raw buffer
 		  // if data can not be parsed automatically
 		  //command.data;
-		});        
+		this.bus.on('command', node.transmit);
+
+		this.on("close", function(){
+
+		});
     }
     RED.nodes.registerType("buspro-in",BusproIn);
 

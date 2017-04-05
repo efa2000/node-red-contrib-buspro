@@ -36,18 +36,16 @@
 <script type="text/javascript">
     RED.nodes.registerType('buspro-in',{
         category: 'input',
-        color: '#fcc127',
+        color: '#42A5F5',
         defaults: {
             controller: {value:"", type:"buspro-controller"},
-            subnetid: {value: "", required: true, validate: RED.validators.number()},
-            deviceid: {value: "", required: true, validate: RED.validators.number()},
             name: {value:""}
         },
         inputs:0,
         outputs:1,
         icon: "bridge.png",
         label: function() {
-            return this.name||this.subnetid+"."+this.deviceid+"@buspro-in";
+            return this.name||"BusPro-in";
         }
     });
 </script>
@@ -58,19 +56,14 @@
         <input id="node-input-controller">
     </div>
     <div class="form-row">
-        <label for="node-input-subnetid"><i class="icon-bookmark"></i> Subnet ID</label>
-        <input type="text" id="node-input-subnetid">
-    </div>
-    <div class="form-row">
-        <label for="node-input-deviceid"><i class="icon-bookmark"></i> Device ID</label>
-        <input type="text" id="node-input-deviceid">
-    </div>
-    <div class="form-row">
          <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="buspro-in">
-    <p>A simple node that converts the message payloads into all lower-case characters</p>
+    <p>Receive commands from BusPro (Smart-Bus) network</p>
+    <p><b>msg.sender and msg.target</b> - ID of Device</p>
+    <p><b>msg.code</b> - Integer with command operation code</p>
+    <p><b>msg.payload</b> - bject with decoded data or raw buffer if data can not be parsed automatically</p>
 </script>
