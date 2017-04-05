@@ -15,7 +15,7 @@
 
 <script type="text/x-red" data-template-name="buspro-controller">
     <div class="form-row">
-        <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
+        <label for="node-config-input-host"><i class="icon-bookmark"></i> IP</label>
         <input type="text" id="node-config-input-host">
     </div>
     <div class="form-row">
@@ -34,32 +34,43 @@
 
 
 <script type="text/javascript">
-    RED.nodes.registerType('lower-case',{
-        category: 'function',
-        color: '#a6bbcf',
+    RED.nodes.registerType('buspro-in',{
+        category: 'input',
+        color: '#fcc127',
         defaults: {
-            bus: {value:"", type:"buspro-controller"},
+            controller: {value:"", type:"buspro-controller"},
+            subnetid: {value: "", required: true, validate: RED.validators.number()},
+            deviceid: {value: "", required: true, validate: RED.validators.number()},
             name: {value:""}
         },
-        inputs:1,
+        inputs:0,
         outputs:1,
-        icon: "file.png",
+        icon: "bridge.png",
         label: function() {
-            return this.name||"lower-case";
+            return this.name||this.subnetid+"."+this.deviceid+"@buspro-in";
         }
     });
 </script>
 
-<script type="text/x-red" data-template-name="lower-case">
+<script type="text/x-red" data-template-name="buspro-in">
     <div class="form-row">
-        <label for="node-input-bus"><i class="icon-tag"></i> Name</label>
-        <input id="node-input-bus">
-
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <label for="node-input-controller"><i class="icon-tag"></i> Gateway</label>
+        <input id="node-input-controller">
+    </div>
+    <div class="form-row">
+        <label for="node-input-subnetid"><i class="icon-bookmark"></i> Subnet ID</label>
+        <input type="text" id="node-input-subnetid">
+    </div>
+    <div class="form-row">
+        <label for="node-input-deviceid"><i class="icon-bookmark"></i> Device ID</label>
+        <input type="text" id="node-input-deviceid">
+    </div>
+    <div class="form-row">
+         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="lower-case">
+<script type="text/x-red" data-help-name="buspro-in">
     <p>A simple node that converts the message payloads into all lower-case characters</p>
 </script>
