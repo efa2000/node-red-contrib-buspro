@@ -15,7 +15,6 @@ defaults: {
 ```
 ## BusPro-IN 
 Receive commands from BusPro (Smart-Bus) network
-### Config
 ### Outgoing message
 ```js
 msg:{
