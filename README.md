@@ -2,10 +2,15 @@
 Node-Red implementation of HDL BusPro (SmartBus) protocol http://hdlautomation.com
 
 Based on https://github.com/caligo-mentis/smart-bus.
-
+Receive commands from BusPro (Smart-Bus) network
 ## BusPro-IN 
-
-<p>Receive commands from BusPro (Smart-Bus) network</p>
-<p><b>msg.sender and msg.target</b> - ID of Device</p>
-<p><b>msg.code</b> - Integer with command operation code</p>
-<p><b>msg.payload</b> - Object with decoded data or raw buffer if data can not be parsed automatically</p>
+### Config
+### Outgoing message
+```js
+msg:{
+  sender: "1.2" //ID of Sender Device
+  target: "255.255" //ID of Target Device
+  code: 50    //Integer with command operation code
+  payload: {}   //Object with decoded data or raw buffer if data can not be parsed automatically
+}
+```
