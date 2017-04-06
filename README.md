@@ -2,8 +2,19 @@
 Node-Red implementation of HDL BusPro (SmartBus) protocol http://hdlautomation.com
 
 Based on https://github.com/caligo-mentis/smart-bus.
-Receive commands from BusPro (Smart-Bus) network
+## BusPro-Controller
+node that holds connection to IP Gateway of BusPro (Smart-Bus) network
+### Config
+```js
+defaults: {
+            host: {value:"",required:true},   // HDL SmartBus gateway IP 
+            port: {value:6000,required:true,validate:RED.validators.number()},    // and port, default: 6000 
+            subnetid: {value: 1, required: true, validate: RED.validators.number()}, // Connector address in HDL network (Subnet ID)
+            deviceid: {value: 99, required: true, validate: RED.validators.number()} // Connector address in HDL network (Device ID)
+        }
+```
 ## BusPro-IN 
+Receive commands from BusPro (Smart-Bus) network
 ### Config
 ### Outgoing message
 ```js
