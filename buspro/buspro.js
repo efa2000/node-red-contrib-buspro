@@ -1,4 +1,7 @@
 var SmartBus = require('smart-bus');
+var commandsLink = {
+	49: 50
+};
 
 
 module.exports = function(RED) {
@@ -34,14 +37,7 @@ module.exports = function(RED) {
 		  	msg.payload = command.data;
 		  	node.send(msg);
 		};
-        // Integer with command operation code
-		  //command.code;
-		  // Device objects
-		  //command.sender;
-		  //command.target;
-		  // Object with decoded data or raw buffer
-		  // if data can not be parsed automatically
-		  //command.data;
+
 		this.bus.on('command', node.transmit);
 
 		this.on("close", function(){
@@ -49,6 +45,39 @@ module.exports = function(RED) {
 		});
     }
     RED.nodes.registerType("buspro-in",BusproIn);
+
+    function BusproDevice(config) {
+        RED.nodes.createNode(this,config);
+        this.subnetid = parseInt(config.subnetid);
+        this.deviceid = parseInt(config.deviceid);
+        this.devicetype = config.devicetype;
+        console.log(config.devicetype);
+        var controller = RED.nodes.getNode(config.controller);
+        
+        var node = this;
+        this.device = controller.bus.device(node.subnetid+"."+node.deviceid);
+        this.recived = function(data, target){
+        	var msg = {};
+		  	msg.sender = node.subnetid+"."+node.deviceid;
+		  	msg.target = target.subnet + "." + target.id;
+		  	msg.code = commandsLink[node.devicetype];
+		  	msg.payload = data;
+		  	node.send(msg);
+		};
+
+		this.device.on(commandsLink[node.devicetype], node.recived);
+
+		this.on('input', function(msg) {
+         	node.device.send(49, msg.payload, function(err){
+
+         	});
+     	});
+
+		this.on("close", function(){
+
+		});
+    }
+    RED.nodes.registerType("buspro-device",BusproDevice);
 
 
 }
