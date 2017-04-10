@@ -2,8 +2,10 @@
 Node-Red implementation of HDL BusPro (SmartBus) protocol http://hdlautomation.com
 
 Based on https://github.com/caligo-mentis/smart-bus.
+
 ## BusPro-Controller
 node that holds connection to IP Gateway of BusPro (Smart-Bus) network
+
 ### Config
 ```js
 defaults: {
@@ -13,8 +15,10 @@ defaults: {
             deviceid: {value: 99, required: true, validate: RED.validators.number()} // Connector address in HDL network (Device ID)
         }
 ```
+
 ## BusPro-IN 
 Receive commands from BusPro (Smart-Bus) network
+
 ### Outgoing message
 ```js
 msg:{
