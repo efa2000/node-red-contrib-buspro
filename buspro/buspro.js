@@ -29,19 +29,20 @@ module.exports = function(RED) {
         var controller = RED.nodes.getNode(config.controller);
         this.bus = controller.bus;
         var node = this;
-        this.transmit = function(command){
+        this.recived = function(command){
         	var msg = {};
 		  	msg.sender = command.sender.subnet + "." + command.sender.id;
 		  	msg.target = command.target.subnet + "." + command.target.id;
 		  	msg.code = command.code;
 		  	msg.payload = command.data;
 		  	node.send(msg);
+            console.log("Message");
 		};
 
-		this.bus.on('command', node.transmit);
+		this.bus.on('command', node.recived);
 
-		this.on("close", function(){
-
+		this.on("close", ()=>{
+            this.removeListener('command', node.recived);
 		});
     }
     RED.nodes.registerType("buspro-in",BusproIn);
