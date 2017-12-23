@@ -1,4 +1,5 @@
 var SmartBus = require('smart-bus');
+var EventEmitter = require('events').EventEmitter;
 var commandsLink = {
 	49: 50
 };
@@ -29,56 +30,41 @@ module.exports = function(RED) {
         var controller = RED.nodes.getNode(config.controller);
         this.bus = controller.bus;
         var node = this;
-        this.recived = function(command){
+        this.recivedCommand = function(command){
         	var msg = {};
+            node.log(command.sender);
 		  	msg.sender = command.sender.subnet + "." + command.sender.id;
 		  	msg.target = command.target.subnet + "." + command.target.id;
 		  	msg.code = command.code;
 		  	msg.payload = command.data;
+            msg.topic = 'command';
 		  	node.send(msg);
-            console.log("Message");
 		};
 
-		this.bus.on('command', node.recived);
+		this.bus.on('command', node.recivedCommand);
 
 		this.on("close", ()=>{
-            this.removeListener('command', node.recived);
+            this.bus.removeListener('command', node.recivedCommand);
 		});
     }
     RED.nodes.registerType("buspro-in",BusproIn);
 
-    function BusproDevice(config) {
+    function BusproOut(config) {
         RED.nodes.createNode(this,config);
-        this.subnetid = parseInt(config.subnetid);
-        this.deviceid = parseInt(config.deviceid);
-        this.devicetype = config.devicetype;
-        console.log(config.devicetype);
         var controller = RED.nodes.getNode(config.controller);
-        
+        this.bus = controller.bus;
         var node = this;
-        this.device = controller.bus.device(node.subnetid+"."+node.deviceid);
-        this.recived = function(data, target){
-        	var msg = {};
-		  	msg.sender = node.subnetid+"."+node.deviceid;
-		  	msg.target = target.subnet + "." + target.id;
-		  	msg.code = commandsLink[node.devicetype];
-		  	msg.payload = data;
-		  	node.send(msg);
-		};
+        this.on('input', (msg)=>{
+            node.bus.send(msg.target, msg.command, msg.payload, function(err) {
+                node.error(err);
+            });
+        });
+       
+        this.on("close", ()=>{
 
-		this.device.on(commandsLink[node.devicetype], node.recived);
-
-		this.on('input', function(msg) {
-         	node.device.send(49, msg.payload, function(err){
-
-         	});
-     	});
-
-		this.on("close", function(){
-
-		});
+        });
     }
-    RED.nodes.registerType("buspro-device",BusproDevice);
+    RED.nodes.registerType("buspro-out",BusproOut);
 
 
 }

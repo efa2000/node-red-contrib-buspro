@@ -36,7 +36,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('buspro-in',{
         category: 'input',
-        color: '#42A5F5',
+        color: '#D8BFD8',
         defaults: {
             controller: {value:"", type:"buspro-controller"},
             name: {value:""}
@@ -45,7 +45,7 @@
         outputs:1,
         icon: "bridge.png",
         label: function() {
-            return this.name||"BusPro-in";
+            return this.name||"BusPro =>";
         }
     });
 </script>
@@ -68,27 +68,26 @@
     <p><b>msg.payload</b> - Object with decoded data or raw buffer if data can not be parsed automatically</p>
 </script>
 
+
 <script type="text/javascript">
-    RED.nodes.registerType('buspro-device',{
-        category: 'advanced',
-        color: '#42A5F5',
+    RED.nodes.registerType('buspro-out',{
+        category: 'output',
+        color: '#D8BFD8',
         defaults: {
             controller: {value:"", type:"buspro-controller"},
-            subnetid: {value: "", required: true, validate: RED.validators.number()},
-            deviceid: {value: "", required: true, validate: RED.validators.number()},
-            devicetype: {value: "", required: true},
             name: {value:""}
         },
         inputs:1,
-        outputs:1,
+        outputs:0,
         icon: "bridge.png",
+        align: 'right',
         label: function() {
-            return this.name||this.subnetid+"."+this.deviceid+"@BusPro";
+            return this.name||"=> BusPro";
         }
     });
 </script>
 
-<script type="text/x-red" data-template-name="buspro-device">
+<script type="text/x-red" data-template-name="buspro-out">
     <div class="form-row">
         <label for="node-input-controller"><i class="icon-tag"></i> Gateway</label>
         <input id="node-input-controller">
@@ -97,22 +96,11 @@
          <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
-    <div class="form-row">
-        <label for="node-input-subnetid"><i class="icon-bookmark"></i> Subnet ID</label>
-        <input type="text" id="node-input-subnetid">
-    </div>
-    <div class="form-row">
-        <label for="node-input-deviceid"><i class="icon-bookmark"></i> Device ID</label>
-        <input type="text" id="node-input-deviceid">
-    </div>
-    <div class="form-row">
-        <span>Device Type</span>
-        <select type="text" id="node-input-devicetype">
-            <option value=49>Single channel</option>
-        </select>
-    </div>
 </script>
 
-<script type="text/x-red" data-help-name="buspro-device">
-    <p>Receive and Send commands for Device in BusPro (Smart-Bus) network</p>
+<script type="text/x-red" data-help-name="buspro-out">
+    <p>Send commands to BusPro (Smart-Bus) network</p>
+    <p><b>msg.sender and msg.target</b> - ID of Device</p>
+    <p><b>msg.code</b> - Integer with command operation code</p>
+    <p><b>msg.payload</b> - Object with data or raw buffer</p>
 </script>
