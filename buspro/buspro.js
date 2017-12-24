@@ -32,7 +32,6 @@ module.exports = function(RED) {
         var node = this;
         this.recivedCommand = function(command){
         	var msg = {};
-            node.log(command.sender);
 		  	msg.sender = command.sender.subnet + "." + command.sender.id;
 		  	msg.target = command.target.subnet + "." + command.target.id;
 		  	msg.code = command.code;
@@ -55,8 +54,14 @@ module.exports = function(RED) {
         this.bus = controller.bus;
         var node = this;
         this.on('input', (msg)=>{
+            if (!msg.target || !msg.command){
+                node.error("Required parameters msg.target and msg.command");
+                return;
+            }
             node.bus.send(msg.target, msg.command, msg.payload, function(err) {
-                node.error(err);
+                if (err){
+                    node.error(err);   
+                }
             });
         });
        
