@@ -54,11 +54,11 @@ module.exports = function(RED) {
         this.bus = controller.bus;
         var node = this;
         this.on('input', (msg)=>{
-            if (!msg.target || !msg.command){
-                node.error("Required parameters msg.target and msg.command");
+            if (!msg.target || !msg.code){
+                node.error("Required parameters msg.target and msg.code");
                 return;
             }
-            node.bus.send(msg.target, msg.command, msg.payload, function(err) {
+            node.bus.send(msg.target, msg.code, msg.payload, function(err) {
                 if (err){
                     node.error(err);   
                 }
