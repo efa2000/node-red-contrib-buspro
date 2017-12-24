@@ -28,3 +28,18 @@ msg:{
   payload: {}   //Object with decoded data or raw buffer if data can not be parsed automatically
 }
 ```
+
+## BusPro-OUT 
+Send commands to BusPro (Smart-Bus) network
+
+### Outgoing message
+```js
+msg:{
+  target: "1.52" //ID of Target Device
+  code: 49    //Integer with command operation code
+  payload: { //Object with data or raw buffer 
+  		channel: 2,
+  		level: 100
+  	}   
+}
+```
