@@ -1,9 +1,4 @@
 var SmartBus = require('smart-bus');
-var EventEmitter = require('events').EventEmitter;
-var commandsLink = {
-	49: 50
-};
-
 
 module.exports = function(RED) {
     function BusproControllerNode(n) {
@@ -16,10 +11,24 @@ module.exports = function(RED) {
   			device: node.deviceid,      // Connector address in HDL network (subnet.id)
   			gateway: node.host, 		// HDL SmartBus gateway IP
   			port: node.port             // and port, default: 6000
-		});
-		this.on("close",function(){
-			node.bus.removeAllListeners();
-			node.bus.socket.close();
+        });
+        this.bus.on('command',(c)=>{
+            const eventSender = ['sender', c.sender.subnet, c.sender.id].join('.');
+            const eventTarget = ['target', c.target.subnet, c.target.id].join('.');
+            const msg = {
+                sender: {subnet:c.sender.subnet,id:c.sender.id},
+                target: {subnet:c.target.subnet,id:c.target.id},
+                code: c.code,
+                data: c.data
+            };
+            this.emit('all',msg);
+            this.emit(eventSender,msg);
+            this.emit(eventTarget,msg);
+            // console.log(eventSender,'=>' ,eventTarget);
+        });
+		this.on("close",()=>{
+			this.bus.removeAllListeners();
+		    this.bus.socket.close();
 		})        
     }
     RED.nodes.registerType("buspro-controller",BusproControllerNode);
@@ -27,23 +36,39 @@ module.exports = function(RED) {
 
     function BusproIn(config) {
         RED.nodes.createNode(this,config);
-        var controller = RED.nodes.getNode(config.controller);
-        this.bus = controller.bus;
-        var node = this;
-        this.recivedCommand = function(command){
+        var eventName = 'all';
+        switch (config.filter){
+            case 'all':
+                eventName = 'all';
+                break;
+            case 'broadcast':
+                eventName = ['target',255,255].join('.');
+                break;
+            case 'sender':
+                eventName = ['sender',config.subnetid,config.deviceid].join('.');
+                break;
+            case 'target':
+                eventName = ['target',config.subnetid,config.deviceid].join('.');
+                break;
+            default:
+                eventName = 'all'
+                break;
+        };
+        const controller = RED.nodes.getNode(config.controller);
+        this.recivedCommand = (command)=>{
         	var msg = {};
 		  	msg.sender = command.sender.subnet + "." + command.sender.id;
 		  	msg.target = command.target.subnet + "." + command.target.id;
 		  	msg.code = command.code;
 		  	msg.payload = command.data;
-            msg.topic = 'command';
-		  	node.send(msg);
-		};
-
-		this.bus.on('command', node.recivedCommand);
+            msg.topic = 'BusPro';
+		  	this.send(msg);
+        };
+        
+        controller.on(eventName, this.recivedCommand);
 
 		this.on("close", ()=>{
-            this.bus.removeListener('command', node.recivedCommand);
+            controller.removeListener(eventName,this.recivedCommand);
 		});
     }
     RED.nodes.registerType("buspro-in",BusproIn);

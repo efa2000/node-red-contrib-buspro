@@ -56,10 +56,12 @@
         }
     });
     function che(t){
-        if (t=='to' || t == 'from'){
+        if (t=='sender' || t == 'target'){
             document.getElementById("subfilter").hidden = false; 
         }else{
             document.getElementById("subfilter").hidden = true;
+            document.getElementById("node-input-subnetid").value = 0;
+            document.getElementById("node-input-deviceid").value = 0;
         }
         
     }
@@ -79,8 +81,8 @@
         <select id="node-input-filter" onchange="che(this.options[this.selectedIndex].value)">
             <option value="all">All message</option>
             <option value="broadcast">Broadcast only</option>
-            <option value="from" >From device</option>
-            <option value="to">To device</option>
+            <option value="sender" >Sender device</option>
+            <option value="target">Target device</option>
         </select>
     </div>
     <div id="subfilter" hidden>
