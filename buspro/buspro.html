@@ -14,14 +14,17 @@
 </script>
 
 <script type="text/x-red" data-template-name="buspro-controller">
+    <div class="form-row"><b>Network</b></div>
     <div class="form-row">
-        <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
-        <input type="text" id="node-config-input-host">
+        <label for="node-config-input-host"><i class="fa fa-cogs"></i> Gateway IP</label>
+        <input type="text" id="node-config-input-host" placeholder="192.168.1.99">
     </div>
     <div class="form-row">
         <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
         <input type="text" id="node-config-input-port">
     </div>
+    <div class="form-tips"><b>Tip:</b> Enter gateway IP address and port</div>
+    <div class="form-row"><b>BusPro</b></div>
     <div class="form-row">
         <label for="node-config-input-subnetid"><i class="icon-bookmark"></i> Subnet ID</label>
         <input type="text" id="node-config-input-subnetid">
@@ -30,6 +33,7 @@
         <label for="node-config-input-deviceid"><i class="icon-bookmark"></i> Device ID</label>
         <input type="text" id="node-config-input-deviceid">
     </div>
+    <div class="form-tips"><b>Tip:</b> Enter the BusPro address for this virtual controller</div>
 </script>
 
 
@@ -39,7 +43,10 @@
         color: '#D8BFD8',
         defaults: {
             controller: {value:"", type:"buspro-controller"},
-            name: {value:""}
+            name: {value:""},
+            filter: {value:"all"},
+            subnetid: {value:0, validate: RED.validators.number()},
+            deviceid: {value:0, validate: RED.validators.number()}
         },
         inputs:0,
         outputs:1,
@@ -48,22 +55,51 @@
             return this.name||"BusPro =>";
         }
     });
+    function che(t){
+        if (t=='to' || t == 'from'){
+            document.getElementById("subfilter").hidden = false; 
+        }else{
+            document.getElementById("subfilter").hidden = true;
+        }
+        
+    }
 </script>
 
 <script type="text/x-red" data-template-name="buspro-in">
     <div class="form-row">
-        <label for="node-input-controller"><i class="icon-tag"></i> Gateway</label>
+        <label for="node-input-controller"> Gateway</label>
         <input id="node-input-controller">
     </div>
     <div class="form-row">
-         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <label for="node-input-name"> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-filter"> Filter</label>
+        <select id="node-input-filter" onchange="che(this.options[this.selectedIndex].value)">
+            <option value="all">All message</option>
+            <option value="broadcast">Broadcast only</option>
+            <option value="from" >From device</option>
+            <option value="to">To device</option>
+        </select>
+    </div>
+    <div id="subfilter" hidden>
+        <div class="form-row">
+            <label for="node-input-subnetid"><i class="icon-bookmark"></i> Subnet ID</label>
+            <input type="text" id="node-input-subnetid">
+        </div>
+        <div class="form-row">
+            <label for="node-input-deviceid"><i class="icon-bookmark"></i> Device ID</label>
+            <input type="text" id="node-input-deviceid">
+        </div>
+        <div class="form-tips"><b>Tip:</b> Enter the BusPro address for filtering</div>
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="buspro-in">
     <p>Receive commands from BusPro (Smart-Bus) network</p>
-    <p><b>msg.sender and msg.target</b> - ID of Device</p>
+    <p><b>msg.sender</b> - ID of source device</p>
+    <p><b>msg.sender</b> - ID of target device</p>
     <p><b>msg.code</b> - Integer with command operation code</p>
     <p><b>msg.payload</b> - Object with decoded data or raw buffer if data can not be parsed automatically</p>
 </script>

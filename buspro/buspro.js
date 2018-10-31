@@ -15,7 +15,7 @@ module.exports = function(RED) {
 		this.bus = new SmartBus({
   			device: node.deviceid,      // Connector address in HDL network (subnet.id)
   			gateway: node.host, 		// HDL SmartBus gateway IP
-  			port: node.port                	// and port, default: 6000
+  			port: node.port             // and port, default: 6000
 		});
 		this.on("close",function(){
 			node.bus.removeAllListeners();
