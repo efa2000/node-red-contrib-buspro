@@ -9,8 +9,8 @@ node that holds connection to IP Gateway of BusPro (Smart-Bus) network
 ### Config
 ```js
 defaults: {
-            host: {value:"",required:true},   // HDL SmartBus gateway IP 
-            port: {value:6000,required:true,validate:RED.validators.number()},    // and port, default: 6000 
+            host: {value:"",required:true},   // HDL BusPro  IP gateway 
+            port: {value:6000, required:true, validate:RED.validators.number()},    // and port, default: 6000 
             subnetid: {value: 1, required: true, validate: RED.validators.number()}, // Connector address in HDL network (Subnet ID)
             deviceid: {value: 99, required: true, validate: RED.validators.number()} // Connector address in HDL network (Device ID)
         }
@@ -28,11 +28,16 @@ msg:{
   payload: {}   //Object with decoded data or raw buffer if data can not be parsed automatically
 }
 ```
+You can filter incoming message:
+ - All messages
+ - Broadcast only
+ - FROM specific device
+ - TO specific device
 
 ## BusPro-OUT 
 Send commands to BusPro (Smart-Bus) network
 
-### Outgoing message
+### Message for send to bus
 ```js
 msg:{
   target: "1.52" //ID of Target Device
