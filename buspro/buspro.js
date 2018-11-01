@@ -24,7 +24,6 @@ module.exports = function(RED) {
             this.emit('all',msg);
             this.emit(eventSender,msg);
             this.emit(eventTarget,msg);
-            // console.log(eventSender,'=>' ,eventTarget);
         });
 		this.on("close",()=>{
 			this.bus.removeAllListeners();
@@ -84,7 +83,7 @@ module.exports = function(RED) {
         this.bus = controller.bus;
         this.on('input', (msg)=>{
             if (!msg.target || !msg.code){
-                node.error("Required parameters msg.target and msg.code");
+                this.error("Required parameters msg.target and msg.code");
                 return;
             }
             this.bus.send(msg.target, msg.code, msg.payload, (err)=>{
