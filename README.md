@@ -30,7 +30,7 @@ msg:{
   payload: {}   //Object with decoded data or raw buffer if data can not be parsed automatically
 }
 ```
-You can filter incoming message:
+It can filter incoming messages:
  - All messages
  - Broadcast only
  - FROM specific device
