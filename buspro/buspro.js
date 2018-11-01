@@ -57,8 +57,8 @@ module.exports = function(RED) {
         const controller = RED.nodes.getNode(config.controller);
         this.recivedCommand = (command)=>{
         	var msg = {};
-		  	msg.sender = command.sender.subnet + "." + command.sender.id;
-		  	msg.target = command.target.subnet + "." + command.target.id;
+		  	msg.sender = [command.sender.subnet, command.sender.id].join('.');
+		  	msg.target = [command.target.subnet, command.target.id].join('.');
 		  	msg.code = command.code;
 		  	msg.payload = command.data;
             msg.topic = [
@@ -82,15 +82,14 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         var controller = RED.nodes.getNode(config.controller);
         this.bus = controller.bus;
-        var node = this;
         this.on('input', (msg)=>{
             if (!msg.target || !msg.code){
                 node.error("Required parameters msg.target and msg.code");
                 return;
             }
-            node.bus.send(msg.target, msg.code, msg.payload, function(err) {
+            this.bus.send(msg.target, msg.code, msg.payload, (err)=>{
                 if (err){
-                    node.error(err);   
+                    this.error(err);   
                 }
             });
         });
