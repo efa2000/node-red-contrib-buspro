@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-buspro",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Node-Red implementation of HDL BusPro (SmartBus) protocol http://hdlautomation.com",
   "main": "index.js",
   "scripts": {

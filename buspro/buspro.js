@@ -61,7 +61,12 @@ module.exports = function(RED) {
 		  	msg.target = command.target.subnet + "." + command.target.id;
 		  	msg.code = command.code;
 		  	msg.payload = command.data;
-            msg.topic = 'BusPro';
+            msg.topic = [
+                'buspro',
+                msg.sender,
+                msg.target,
+                msg.code
+            ].join('/');
 		  	this.send(msg);
         };
         
