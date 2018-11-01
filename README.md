@@ -1,4 +1,6 @@
 # node-red-contrib-buspro
+[![dependencies Status](https://david-dm.org/efa2000/node-red-contrib-buspro/status.svg)](https://david-dm.org/efa2000/node-red-contrib-buspro)
+
 Node-Red implementation of HDL BusPro (SmartBus) protocol http://hdlautomation.com
 
 Based on https://github.com/caligo-mentis/smart-bus.
