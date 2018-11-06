@@ -21,13 +21,14 @@ defaults: {
 ## BusPro-IN 
 Receive commands from BusPro (Smart-Bus) network
 
-### Outgoing message
+### Message format 
 ```js
 msg:{
-  sender: "1.2" //ID of Sender Device
-  target: "255.255" //ID of Target Device
-  code: 50    //Integer with command operation code
-  payload: {}   //Object with decoded data or raw buffer if data can not be parsed automatically
+  sender: "1.2", //ID of Sender Device
+  target: "255.255", //ID of Target Device
+  code: 50,    //Integer with command operation code
+  payload: {},   //Object with decoded data or raw buffer if data can not be parsed automatically
+  topic: 'buspro/1.2/255.255/50' // topic contains a brief selection of parameters "buspro/{sender}/{target}/{command code}
 }
 ```
 Incoming messages can be filtered:
