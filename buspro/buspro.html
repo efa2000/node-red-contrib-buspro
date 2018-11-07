@@ -46,7 +46,17 @@
             name: {value:""},
             filter: {value:"all"},
             subnetid: {value:0, validate: RED.validators.number()},
-            deviceid: {value:0, validate: RED.validators.number()}
+            deviceid: {value:0, validate: RED.validators.number()},
+            commands: {value:null}
+        },
+        oneditprepare: function(){
+            var arrList = document.getElementById("node-input-commands").value.split(',');
+            for (var i = 0; i < arrList.length; ++i) {
+                if (isInt(arrList[i])){
+                    addFilterCommand(arrList[i]);
+                }
+            }
+            console.log(arrList);
         },
         inputs:0,
         outputs:1,
@@ -63,8 +73,42 @@
             document.getElementById("node-input-subnetid").value = 0;
             document.getElementById("node-input-deviceid").value = 0;
         }
-        
+    };
+    function addFilterCommand(v){
+        if (!isInt(v)) return;
+        var ul = document.getElementById("filter_command_list");
+        var li = document.createElement("li");
+        var i = document.createElement("i");
+        var text = document.createTextNode(v);
+        i.setAttribute("class","fa-li fa fa-minus-square-o");
+        i.style.cursor = "pointer";
+        i.onclick = delFilterCommand;
+        li.appendChild(i);
+        li.appendChild(text);
+        li.setAttribute("id", v);
+        ul.appendChild(li);
+        onChageUl();
     }
+    function delFilterCommand(event){
+        event.target.parentNode.parentNode.removeChild(event.target.parentNode);
+        onChageUl();
+    }
+    function onChageUl(){
+        var ul = document.getElementById("filter_command_list");
+        var lis = ul.getElementsByTagName("li");
+        var arrList = [];
+        for (var i = 0; i < lis.length; ++i) {
+            arrList.push(lis[i].id);
+        }
+        document.getElementById("node-input-commands").value = arrList.join(',');
+    };
+    function isInt(value) {
+        if (isNaN(value)) {
+            return false;
+        }
+        var x = parseFloat(value);
+        return (x | 0) === x;
+    };
 </script>
 
 <script type="text/x-red" data-template-name="buspro-in">
@@ -96,6 +140,16 @@
         </div>
         <div class="form-tips"><b>Tip:</b> Enter the BusPro address for filtering</div>
     </div>
+    <div class="form-row" style="margin-top:8px">
+        <div>Filter command code:</div>
+        <input type="text" id="node-input-add_command">
+        <button class="editor-button" onclick="addFilterCommand(document.getElementById('node-input-add_command').value)"><i class="fa fa-plus" aria-hidden="true"></i></button>
+    </div>
+    <div class="form-row">
+        <ul class="fa-ul" id="filter_command_list">
+        </ul> 
+    </div>
+    <input type="hidden" id="node-input-commands">
 </script>
 
 <script type="text/x-red" data-help-name="buspro-in">
