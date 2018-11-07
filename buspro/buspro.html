@@ -74,7 +74,14 @@
         }
     };
     function addFilterCommand(v){
-        if (!isInt(v)) return;
+        var inp = document.getElementById("node-input-add_command");
+        if (isInt(v)) {
+            inp.setAttribute("class","");
+            inp.value = null;
+        }else{
+            inp.setAttribute("class","input-error");
+            return;
+        };
         var ul = document.getElementById("filter_command_list");
         var li = document.createElement("li");
         var i = document.createElement("i");
@@ -120,8 +127,8 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-filter"> Filter</label>
-        <select id="node-input-filter" onchange="che(this.options[this.selectedIndex].value)">
+        <label for="node-input-filter">Filter type</label>
+        <select id="node-input-filter" onchange="che(this.options[this.selectedIndex].value)" style="width: 70%;">
             <option value="all">All message</option>
             <option value="broadcast">Broadcast only</option>
             <option value="sender" >Sender device</option>
@@ -140,8 +147,8 @@
         <div class="form-tips"><b>Tip:</b> Enter the BusPro address for filtering</div>
     </div>
     <div class="form-row" style="margin-top:8px">
-        <div>Filter command code:</div>
-        <input type="text" id="node-input-add_command">
+        <label for="node-input-add_command">Filter code</label>
+        <input type="text" id="node-input-add_command" style="width: 150px;">
         <button class="editor-button" onclick="addFilterCommand(document.getElementById('node-input-add_command').value)"><i class="fa fa-plus" aria-hidden="true"></i></button>
     </div>
     <div class="form-row">
