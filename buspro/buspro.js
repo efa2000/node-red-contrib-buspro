@@ -53,8 +53,12 @@ module.exports = function(RED) {
                 eventName = 'all'
                 break;
         };
+        const cods = config.commands.split(',').map((v)=>{return parseInt(v)});
         const controller = RED.nodes.getNode(config.controller);
         this.recivedCommand = (command)=>{
+            if (cods.length>0 && commands.indexOf(command.code)<0){
+                return;
+            };
         	var msg = {};
 		  	msg.sender = [command.sender.subnet, command.sender.id].join('.');
 		  	msg.target = [command.target.subnet, command.target.id].join('.');
@@ -68,7 +72,6 @@ module.exports = function(RED) {
             ].join('/');
 		  	this.send(msg);
         };
-        
         controller.on(eventName, this.recivedCommand);
 
 		this.on("close", ()=>{
