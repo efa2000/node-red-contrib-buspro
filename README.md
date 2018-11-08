@@ -31,11 +31,14 @@ msg:{
   topic: 'buspro/1.2/255.255/50' // topic contains a brief selection of parameters "buspro/{sender}/{target}/{command code}
 }
 ```
-Incoming messages can be filtered:
+### Incoming messages can be filtered:
  - All messages
  - Broadcast only
  - FROM specific device
  - TO specific device
+ 
+### You can also use the filter by integer command code.
+
 
 ## BusPro-OUT 
 Send commands to BusPro (Smart-Bus) network
