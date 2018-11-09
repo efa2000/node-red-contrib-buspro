@@ -1,4 +1,5 @@
 # node-red-contrib-buspro
+[![npm version](https://badge.fury.io/js/node-red-contrib-buspro.svg)](https://badge.fury.io/js/node-red-contrib-buspro)
 [![dependencies Status](https://david-dm.org/efa2000/node-red-contrib-buspro/status.svg)](https://david-dm.org/efa2000/node-red-contrib-buspro)
 
 Node-Red implementation of HDL BusPro (SmartBus) protocol http://hdlautomation.com
