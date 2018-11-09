@@ -1,6 +1,15 @@
 var SmartBus = require('smart-bus');
 
 module.exports = function(RED) {
+
+    function isInt(value) {
+        if (isNaN(value)) {
+            return false;
+        }
+        var x = parseFloat(value);
+        return (x | 0) === x;
+    };
+
     function BusproControllerNode(n) {
         RED.nodes.createNode(this,n);
         this.host = n.host;
@@ -53,10 +62,16 @@ module.exports = function(RED) {
                 eventName = 'all'
                 break;
         };
-        const cods = config.commands.split(',').map((v)=>{return parseInt(v)});
+        config.commands = config.commands || "";
+        var cods = [];
+        config.commands.split(',').forEach(v => {
+            if (isInt(v)){
+                cods.push(parseInt(v))
+            }
+        });
         const controller = RED.nodes.getNode(config.controller);
         this.recivedCommand = (command)=>{
-            if (cods.length>0 && commands.indexOf(command.code)<0){
+            if (cods.length>0 && cods.indexOf(command.code)<0){
                 return;
             };
         	var msg = {};
@@ -76,7 +91,7 @@ module.exports = function(RED) {
 
 		this.on("close", ()=>{
             controller.removeListener(eventName,this.recivedCommand);
-		});
+        });
     }
     RED.nodes.registerType("buspro-in",BusproIn);
 
