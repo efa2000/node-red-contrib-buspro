@@ -153,17 +153,52 @@
     </div>
     <div class="form-row">
         <ul class="fa-ul" id="filter_command_list">
-        </ul> 
+        </ul>
+        <div class="form-tips"><b>Tip:</b> To receive all commands, remove all cods from the list.</div>
     </div>
     <input type="hidden" id="node-input-commands">
 </script>
 
 <script type="text/x-red" data-help-name="buspro-in">
     <p>Receive commands from BusPro (Smart-Bus) network</p>
-    <p><b>msg.sender</b> - ID of source device</p>
-    <p><b>msg.sender</b> - ID of target device</p>
-    <p><b>msg.code</b> - Integer with command operation code</p>
-    <p><b>msg.payload</b> - Object with decoded data or raw buffer if data can not be parsed automatically</p>
+    <h3>Filtring options</h3>
+    <p>Incoming messages can be filtered:</p>
+    <ul>
+        <li>All messages</li>
+        <li>Broadcast only</li>
+        <li>FROM specific device</li>
+        <li>TO specific device</li>
+    </ul>
+    <p>You can also use the filter by integer command code.</p>
+    <p>To receive all commands, remove all commands from the list.</p>
+
+    <h3>Output message format</h3>
+    <dl class="message-properties">
+        <dt>sender
+            <span class="property-type">string</span>
+        </dt>
+        <dd> Source device address</dd>
+
+        <dt>target
+            <span class="property-type">string</span>
+        </dt>
+        <dd> Target device address</dd>
+
+        <dt>code
+            <span class="property-type">integer</span>
+        </dt>
+        <dd> Integer with command operation code</dd>
+
+        <dt>topic
+            <span class="property-type">string</span>
+        </dt>
+        <dd> contains a brief selection of parameters "buspro/{sender}/{target}/{command code}"</dd>
+
+        <dt>topic
+            <span class="property-type">object | buffer</span>
+        </dt>
+        <dd> Object with decoded data or raw buffer if data can not be parsed automatically</dd>
+    </dl>
 </script>
 
 
