@@ -232,7 +232,26 @@
 
 <script type="text/x-red" data-help-name="buspro-out">
     <p>Send commands to BusPro (Smart-Bus) network</p>
-    <p><b>msg.target</b> - ID of Device</p>
-    <p><b>msg.code</b> - Integer with command operation code</p>
-    <p><b>msg.payload</b> - Object with data or raw buffer</p>
+    <h3>Message format</h3>
+    <dl class="message-properties">
+        <dt>target
+            <span class="property-type">string</span>
+        </dt>
+        <dd> Target device address</dd>
+
+        <dt>code
+            <span class="property-type">integer</span>
+        </dt>
+        <dd> Integer with command operation code</dd>
+
+        <dt class="optional">sender (optional)
+            <span class="property-type">string</span>
+        </dt>
+        <dd> Source device address. A message will be sent from this device address. If the sender is not presented, it will be sent from the controller address</dd>
+
+        <dt>payload
+            <span class="property-type">object | buffer</span>
+        </dt>
+        <dd> Object with data or raw buffer</dd>
+    </dl>
 </script>

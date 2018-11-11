@@ -47,8 +47,9 @@ Send commands to BusPro (Smart-Bus) network
 ### Message for send to bus
 ```js
 msg:{
-  target: "1.52" //ID of Target Device
-  code: 49    //Integer with command operation code
+  target: "1.52", //Target device address
+  code: 49,    //Integer with command operation code
+  sender: "1.99", // (Optional) Source device address. A message will be sent from this device address. If the sender is not presented, it will be sent from the controller address
   payload: { //Object with data or raw buffer 
   		channel: 2,
   		level: 100
