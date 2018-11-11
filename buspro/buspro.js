@@ -2,6 +2,7 @@ var SmartBus = require('smart-bus');
 
 module.exports = function(RED) {
 
+// Global functions 
     function isInt(value) {
         if (isNaN(value)) {
             return false;
@@ -9,19 +10,26 @@ module.exports = function(RED) {
         var x = parseFloat(value);
         return (x | 0) === x;
     };
+    function isDeviceAddres(address){
+        if (typeof address != 'string') return false;
+        const [subnet, id] = address.split(".").map((v)=>parseInt(v));
+        if (!isInt(subnet) || !isInt(id)) return false;
+        return true;
+    };
 
+// BusPro controller 
     function BusproControllerNode(n) {
         RED.nodes.createNode(this,n);
         this.host = n.host;
         this.port = n.port || 6000;
         this.deviceid = parseInt(n.subnetid)+"."+parseInt(n.deviceid);
         var node = this;
-		this.bus = new SmartBus({
+		const bus = new SmartBus({
   			device: node.deviceid,      // Connector address in HDL network (subnet.id)
   			gateway: node.host, 		// HDL SmartBus gateway IP
   			port: node.port             // and port, default: 6000
         });
-        this.bus.on('command',(c)=>{
+        bus.on('command',(c)=>{
             const eventSender = ['sender', c.sender.subnet, c.sender.id].join('.');
             const eventTarget = ['target', c.target.subnet, c.target.id].join('.');
             const msg = {
@@ -34,14 +42,25 @@ module.exports = function(RED) {
             this.emit(eventSender,msg);
             this.emit(eventTarget,msg);
         });
+        this.send = function(target, code, payload, callback){
+            return bus.send(target, code, payload, callback);
+        };
+        this.sendAs = function( sender, target, code, payload, callback){
+            var cBus = Object.create(bus);
+            const [senderSubnet, SenderId] = sender.split('.'); 
+            cBus.subnet = senderSubnet;
+            cBus.id = SenderId;
+            return cBus.send(target, code, payload, callback);
+        };
 		this.on("close",()=>{
-			this.bus.removeAllListeners();
-		    this.bus.socket.close();
-		})        
+			bus.removeAllListeners();
+		    bus.socket.close();
+        });
+                
     }
     RED.nodes.registerType("buspro-controller",BusproControllerNode);
 
-
+// BusPro node IN
     function BusproIn(config) {
         RED.nodes.createNode(this,config);
         var eventName = 'all';
@@ -95,20 +114,28 @@ module.exports = function(RED) {
     }
     RED.nodes.registerType("buspro-in",BusproIn);
 
+// BusPro node OUT
     function BusproOut(config) {
         RED.nodes.createNode(this,config);
-        var controller = RED.nodes.getNode(config.controller);
-        this.bus = controller.bus;
+        const controller = RED.nodes.getNode(config.controller);
         this.on('input', (msg)=>{
-            if (!msg.target || !msg.code){
-                this.error("Required parameters msg.target and msg.code");
+            if (!isDeviceAddres(msg.target)){
+                this.error("Required parameters msg.target ");
                 return;
+            };
+            if ( !isInt (msg.code)){
+                this.error("Required parameters msg.code");
+                return;
+            };
+            if (isDeviceAddres(msg.sender)){
+                controller.sendAs(msg.sender, msg.target, msg.code, msg.payload, (err)=>{
+                    if (err) this.error(err);
+                });
+            }else{
+                controller.send(msg.target, msg.code, msg.payload, (err)=>{
+                    if (err) this.error(err);
+                });
             }
-            this.bus.send(msg.target, msg.code, msg.payload, (err)=>{
-                if (err){
-                    this.error(err);   
-                }
-            });
         });
        
         this.on("close", ()=>{
@@ -116,7 +143,4 @@ module.exports = function(RED) {
         });
     }
     RED.nodes.registerType("buspro-out",BusproOut);
-
-
 }
-
